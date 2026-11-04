@@ -7,7 +7,8 @@ SECRET_KEY = 'django-insecure-change-this-to-a-random-secret-key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", ".vercel.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "cgpa-calculator-rc1q.onrender.com"]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
