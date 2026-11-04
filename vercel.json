@@ -1,0 +1,9 @@
+{
+  "builds": [
+    {
+      "src": "cgpa_project/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ]
+ 
+}
