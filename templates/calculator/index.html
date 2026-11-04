@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard · CGPA Calculator{% endblock %}
+{% block content %}
+
+<div class="grid gap-4 sm:grid-cols-3 mb-8">
+  <div class="bg-gradient-to-br from-brand-600 to-brand-700 text-white rounded-2xl p-6 shadow-md">
+    <p class="text-sm opacity-90">Cumulative GPA</p>
+    <p class="text-4xl font-bold mt-1">{{ cgpa|floatformat:2 }}</p>
+    <p class="text-xs mt-1 opacity-80">Out of {{ scale|floatformat:1 }}</p>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <p class="text-sm text-slate-500">Total Units</p>
+    <p class="text-4xl font-bold mt-1">{{ total_units }}</p>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <p class="text-sm text-slate-500">Semesters</p>
+    <p class="text-4xl font-bold mt-1">{{ semesters|length }}</p>
+  </div>
+</div>
+
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-xl font-bold">Semesters</h2>
+  <a href="{% url 'add_semester' %}"
+     class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">
+    + Add Semester
+  </a>
+</div>
+
+{% if semesters %}
+<div class="grid gap-4 md:grid-cols-2">
+  {% for s in semesters %}
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="font-bold text-lg">{{ s.name }}</h3>
+        <p class="text-xs text-slate-500">{{ s.courses.count }} courses · {{ s.total_units }} units</p>
+      </div>
+      <div class="text-right">
+        <p class="text-2xl font-bold text-brand-600">{{ s.gpa|floatformat:2 }}</p>
+        <p class="text-xs text-slate-500">GPA</p>
+      </div>
+    </div>
+    <div class="flex gap-2 mt-4">
+      <a href="{% url 'view_semester' s.id %}"
+         class="flex-1 text-center bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-sm py-2 rounded-lg">
+        Open
+      </a>
+      <form method="POST" action="{% url 'delete_semester' s.id %}"
+            onsubmit="return confirm('Delete this semester and all its courses?')">
+        {% csrf_token %}
+        <button class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="bg-white rounded-2xl p-10 text-center border border-dashed border-slate-300">
+  <p class="text-slate-500">No semesters yet. Start by adding your first semester.</p>
+  <a href="{% url 'add_semester' %}"
+     class="inline-block mt-4 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-semibold">
+    Add First Semester
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

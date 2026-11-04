@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}New Semester{% endblock %}
+{% block content %}
+
+<div class="max-w-xl mx-auto bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+  <h1 class="text-2xl font-bold mb-1">Create a Semester</h1>
+  <p class="text-sm text-slate-500 mb-6">Give your semester a name (e.g. "Fall 2024" or "Year 1 · Semester 1").</p>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label class="block text-sm font-semibold mb-1">Semester Name</label>
+      <input name="name" required autofocus maxlength="100"
+             value="{{ form.name.value|default:'' }}"
+             class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none"
+             placeholder="e.g. Fall 2024">
+    </div>
+
+    <div class="flex gap-2">
+      <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-lg font-semibold">
+        Create Semester
+      </button>
+      <a href="{% url 'index' %}" class="px-5 py-2.5 rounded-lg hover:bg-slate-100 font-semibold text-slate-600">
+        Cancel
+      </a>
+    </div>
+  </form>
+
+  <div class="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500">
+    Grades available on current {{ scale|floatformat:1 }} scale:
+    {% for g in mapping.keys %}
+      <span class="inline-block bg-slate-100 px-2 py-0.5 rounded mr-1 mt-1 font-mono">{{ g }}</span>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

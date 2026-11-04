@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Settings · CGPA Calculator{% endblock %}
+{% block content %}
+
+<div class="grid gap-6 lg:grid-cols-2">
+
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <h2 class="font-bold text-lg mb-1">Grade Scale</h2>
+    <p class="text-sm text-slate-500 mb-4">Changing the scale resets the grade mapping to defaults.</p>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="scale">
+      <div class="grid grid-cols-4 gap-2">
+        <label class="cursor-pointer">
+          <input type="radio" name="scale" value="4.0" class="peer sr-only" {% if settings.scale == 4.0 %}checked{% endif %}>
+          <div class="text-center py-3 rounded-lg border border-slate-300 peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-semibold">4.0</div>
+        </label>
+        <label class="cursor-pointer">
+          <input type="radio" name="scale" value="5.0" class="peer sr-only" {% if settings.scale == 5.0 %}checked{% endif %}>
+          <div class="text-center py-3 rounded-lg border border-slate-300 peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-semibold">5.0</div>
+        </label>
+        <label class="cursor-pointer">
+          <input type="radio" name="scale" value="7.0" class="peer sr-only" {% if settings.scale == 7.0 %}checked{% endif %}>
+          <div class="text-center py-3 rounded-lg border border-slate-300 peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-semibold">7.0</div>
+        </label>
+        <label class="cursor-pointer">
+          <input type="radio" name="scale" value="10.0" class="peer sr-only" {% if settings.scale == 10.0 %}checked{% endif %}>
+          <div class="text-center py-3 rounded-lg border border-slate-300 peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-semibold">10.0</div>
+        </label>
+      </div>
+      <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-lg font-semibold w-full">
+        Apply Scale
+      </button>
+    </form>
+  </div>
+
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <h2 class="font-bold text-lg mb-1">Custom Grade Mapping</h2>
+    <p class="text-sm text-slate-500 mb-4">Fine-tune grade points for the current scale.</p>
+
+    <form method="POST" id="mappingForm">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="mapping">
+      <div class="space-y-2 max-h-72 overflow-y-auto pr-1" id="mappingRows">
+        {% for g, p in mapping.items %}
+        <div class="flex gap-2 items-center">
+          <input name="grade_name[]" value="{{ g }}" placeholder="Grade"
+                 class="w-24 px-3 py-2 rounded-lg border border-slate-300 font-mono text-sm uppercase">
+          <input name="grade_point[]" type="number" step="0.1" value="{{ p }}" placeholder="Points"
+                 class="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-sm">
+          <button type="button" onclick="this.parentElement.remove()"
+                  class="text-red-600 hover:bg-red-50 px-2 py-1 rounded">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="button" onclick="addRow()" class="mt-2 text-sm text-brand-600 hover:underline">+ Add grade</button>
+      <button class="mt-4 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-lg font-semibold w-full">
+        Save Mapping
+      </button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+function addRow() {
+  const rows = document.getElementById('mappingRows');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 items-center';
+  div.innerHTML =
+    '<input name="grade_name[]" placeholder="Grade" class="w-24 px-3 py-2 rounded-lg border border-slate-300 font-mono text-sm uppercase">' +
+    '<input name="grade_point[]" type="number" step="0.1" placeholder="Points" class="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-sm">' +
+    '<button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded">✕</button>';
+  rows.appendChild(div);
+}
+</script>
+
+{% endblock %}
